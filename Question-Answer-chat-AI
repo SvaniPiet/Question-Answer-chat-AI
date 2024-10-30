@@ -1,0 +1,36 @@
+import streamlit as st
+from langchain.prompts import PromptTemplate
+from langchain.llms import CTransformers
+
+def getLLamaresponse(input_text):
+    llm=CTransformers(model='llama-2-7b-chat.ggmlv3.q8_0.bin',
+                  model_type='llama',
+                  config={'max_new_tokens': 512,  
+                          'temperature': 0.01})
+
+    
+    template="""
+        Question: {input_text}
+        Answer:
+        """
+    
+    prompt=PromptTemplate(input_variables=["input_text"],
+                          template=template)
+    
+    response=llm(prompt.format(input_text=input_text))
+    print(response)
+    return response
+
+st.set_page_config(page_title="Question Answer Generator",
+                    page_icon='🤖',
+                    layout='centered',
+                    initial_sidebar_state='collapsed')
+
+st.header("Question Answer Generator 🤖")
+
+input_text=st.text_input("Enter your question")
+
+submit=st.button("Get Answer")
+
+if submit:
+    st.write(getLLamaresponse(input_text))
